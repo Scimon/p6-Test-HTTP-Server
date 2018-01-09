@@ -1,7 +1,17 @@
 use v6.c;
+use Test::Util::ServerPort;
+
 unit class Test::HTTP::Server:ver<0.0.1>;
 
-method port () { 8080; }
+has Int $.port;
+has Str $.dir;
+
+submethod BUILD( :$dir ) {
+    $!port = get-unused-port();
+    $!dir := $dir;
+}
+
+method events() { [] }
 
 
 =begin pod
