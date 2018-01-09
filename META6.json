@@ -4,8 +4,8 @@
   ],
   "build-depends" : [ ],
   "depends" : [
-      "HTTP::Server::Async",
-      "Test::Util::ServerPort"
+    "HTTP::Server::Async",
+    "Test::Util::ServerPort"
   ],
   "description" : "blah blah blah",
   "license" : "Artistic-2.0",
@@ -15,8 +15,13 @@
     "Test::HTTP::Server" : "lib/Test/HTTP/Server.pm6"
   },
   "resources" : [ ],
-  "source-url" : "",
-  "tags" : [ "test" ],
-  "test-depends" : [ ],
+  "source-url" : "https://github.com/Scimon/p6-Test-HTTP-Server.git",
+  "tags" : [
+    "test"
+  ],
+  "test-depends" : [
+    "File::Temp",
+    "LWP::Simple"
+  ],
   "version" : "0.0.1"
 }

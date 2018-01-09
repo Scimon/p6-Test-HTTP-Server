@@ -1,6 +1,8 @@
 use v6.c;
 unit class Test::HTTP::Server:ver<0.0.1>;
 
+method port () { 8080; }
+
 
 =begin pod
 
