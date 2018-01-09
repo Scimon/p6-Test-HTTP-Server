@@ -1,0 +1,22 @@
+{
+  "authors" : [
+    "Simon Proctor"
+  ],
+  "build-depends" : [ ],
+  "depends" : [
+      "HTTP::Server::Async",
+      "Test::Util::ServerPort"
+  ],
+  "description" : "blah blah blah",
+  "license" : "Artistic-2.0",
+  "name" : "Test::HTTP::Server",
+  "perl" : "6.c",
+  "provides" : {
+    "Test::HTTP::Server" : "lib/Test/HTTP/Server.pm6"
+  },
+  "resources" : [ ],
+  "source-url" : "",
+  "tags" : [ "test" ],
+  "test-depends" : [ ],
+  "version" : "0.0.1"
+}
