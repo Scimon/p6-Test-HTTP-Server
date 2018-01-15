@@ -22,4 +22,14 @@ my $ua = HTTP::UserAgent.new();
 my $response = $ua.get( "http://localhost:{$server.port}/nothing.html" );
 is $response.code, 404, "Empty folder gives a 404 on requests";
 
+my @events = $server.events;
+my @events2 = $server2.events;
+
+is @events2.elems, 0, "Server 2 has not been called, no registered events";
+is @events.elems, 1, "Server has 1 event";
+is $server.events.elems, 1, "Calling events does not clear the list";
+is @events[0].path, '/nothing.html', "Expected path called";
+is @events[0].method, 'GET', "Expected method used";
+is @events[0].code, 404, "Expected response code";
+
 done-testing;

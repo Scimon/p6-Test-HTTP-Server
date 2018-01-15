@@ -22,7 +22,7 @@ SYNOPSIS
     is @events.elems, 1, "One request made";
     is @events[0].path, '/index.html', "Expected path called";
     is @events[0].method, 'GET', "Expected method used";
-    is @events[0].response-code, 200, "Expected response code";
+    is @events[0].code, 200, "Expected response code";
 
 DESCRIPTION
 ===========

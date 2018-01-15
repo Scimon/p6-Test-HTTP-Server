@@ -1,26 +1,53 @@
 use v6.c;
 use Test::Util::ServerPort;
 use HTTP::Server::Async;
+use Test::HTTP::Server::Event;
 
 unit class Test::HTTP::Server:ver<0.0.1>;
 
 has Int $.port;
 has Str $.dir;
 has HTTP::Server::Async $!server;
+has Supplier $!server-event-writer;
+has Supply $!server-event-reader;
+has Channel $!event-queue;
+has @!events;
 
 submethod BUILD( :$dir ) {
     $!port = get-unused-port();
     $!dir := $dir;
+    $!server-event-writer = Supplier.new();
+    $!server-event-reader = $!server-event-writer.Supply;
+    $!server-event-reader.tap( -> $d { self.store-event( $d ) } );
+    $!event-queue = Channel.new();
+    
     $!server = HTTP::Server::Async.new( :port($!port) );
-    $!server.handler(
-        sub ($request, $response) {
-            $response.status = 404;
-            $response.close();
-        });
+    
+    $!server.handler( -> $req, $res { self.handle-request( $req, $res ) } );
     $!server.listen();
 }
 
-method events() { [] }
+method handle-request( $request, $response ) {
+    self.register-event( :code(404), :path</nothing.html>, :method<GET> );
+    $response.status = 404;
+    $response.close();
+}
+
+method register-event( :$code, :$path, :$method ) {
+    $!server-event-writer.emit( { :code($code), :path($path), :method($method) } );
+}
+
+method store-event( %data ) {
+    my $event = Test::HTTP::Server::Event.new( |%data );
+    $!event-queue.send( $event );
+}
+
+method events() {
+    $!event-queue.close;
+    @!events.push($_) for $!event-queue.list;
+    $!event-queue = Channel.new();    
+    @!events.clone;
+}
 
 
 =begin pod
@@ -45,7 +72,7 @@ Test::HTTP::Server - Simple to use wrapper around HTTP::Server::Async designed f
   is @events.elems, 1, "One request made";
   is @events[0].path, '/index.html', "Expected path called";
   is @events[0].method, 'GET', "Expected method used";
-  is @events[0].response-code, 200, "Expected response code";
+  is @events[0].code, 200, "Expected response code";
   
 =head1 DESCRIPTION
 
