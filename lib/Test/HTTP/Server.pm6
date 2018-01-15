@@ -28,9 +28,16 @@ submethod BUILD( :$dir ) {
 }
 
 method !handle-request( $request, $response ) {
-    self!register-event( :code(404), :path($request.uri), :method($request.method) );
-    $response.status = 404;
-    $response.close();
+
+    if ( "{$.dir}{$request.uri}".IO.f ) {
+        self!register-event( :code(200), :path($request.uri), :method($request.method) );
+        $response.close("{$.dir}{$request.uri}".IO.slurp.chomp);
+    } else {
+        self!register-event( :code(404), :path($request.uri), :method($request.method) );
+        $response.status = 404;
+        $response.close();
+    }
+    
 }
 
 method !register-event( :$code, :$path, :$method ) {
