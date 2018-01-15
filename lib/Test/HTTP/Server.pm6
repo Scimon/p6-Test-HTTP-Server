@@ -1,14 +1,23 @@
 use v6.c;
 use Test::Util::ServerPort;
+use HTTP::Server::Async;
 
 unit class Test::HTTP::Server:ver<0.0.1>;
 
 has Int $.port;
 has Str $.dir;
+has HTTP::Server::Async $!server;
 
 submethod BUILD( :$dir ) {
     $!port = get-unused-port();
     $!dir := $dir;
+    $!server = HTTP::Server::Async.new( :port($!port) );
+    $!server.handler(
+        sub ($request, $response) {
+            $response.status = 404;
+            $response.close();
+        });
+    $!server.listen();
 }
 
 method events() { [] }

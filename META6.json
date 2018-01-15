@@ -7,7 +7,7 @@
     "HTTP::Server::Async",
     "Test::Util::ServerPort"
   ],
-  "description" : "blah blah blah",
+  "description" : "Simple to use wrapper around HTTP::Server::Async designed for tests",
   "license" : "Artistic-2.0",
   "name" : "Test::HTTP::Server",
   "perl" : "6.c",
@@ -21,7 +21,7 @@
   ],
   "test-depends" : [
     "File::Temp",
-    "LWP::Simple"
+    "HTTP::UserAgent"
   ],
   "version" : "0.0.1"
 }

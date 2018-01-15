@@ -2,7 +2,7 @@ use v6.c;
 use Test;
 use File::Temp;
 use Test::HTTP::Server;
-use LWP::Simple;
+use HTTP::UserAgent;
 
 my $empty-folder = tempdir();
 
@@ -18,8 +18,8 @@ my $server2 = Test::HTTP::Server.new( :dir($empty-folder) );
 
 isnt $server.port, $server2.port, "Second server has a new port";
 
-#my $ua = LWP::Simple.new();
-#my $response = $ua.get( "http://localhost:{$server.port}/nothing.html" );
-#nok $response, "Emptry folder gives a 404";
+my $ua = HTTP::UserAgent.new();
+my $response = $ua.get( "http://localhost:{$server.port}/nothing.html" );
+is $response.code, 404, "Empty folder gives a 404 on requests";
 
 done-testing;
