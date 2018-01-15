@@ -18,26 +18,26 @@ submethod BUILD( :$dir ) {
     $!dir := $dir;
     $!server-event-writer = Supplier.new();
     $!server-event-reader = $!server-event-writer.Supply;
-    $!server-event-reader.tap( -> $d { self.store-event( $d ) } );
+    $!server-event-reader.tap( -> $d { self!store-event( $d ) } );
     $!event-queue = Channel.new();
     
     $!server = HTTP::Server::Async.new( :port($!port) );
     
-    $!server.handler( -> $req, $res { self.handle-request( $req, $res ) } );
+    $!server.handler( -> $req, $res { self!handle-request( $req, $res ) } );
     $!server.listen();
 }
 
-method handle-request( $request, $response ) {
-    self.register-event( :code(404), :path</nothing.html>, :method<GET> );
+method !handle-request( $request, $response ) {
+    self!register-event( :code(404), :path($request.uri), :method($request.method) );
     $response.status = 404;
     $response.close();
 }
 
-method register-event( :$code, :$path, :$method ) {
+method !register-event( :$code, :$path, :$method ) {
     $!server-event-writer.emit( { :code($code), :path($path), :method($method) } );
 }
 
-method store-event( %data ) {
+method !store-event( %data ) {
     my $event = Test::HTTP::Server::Event.new( |%data );
     $!event-queue.send( $event );
 }
@@ -49,6 +49,11 @@ method events() {
     @!events.clone;
 }
 
+method clear-events() {
+    my $elems = @!events.elems;
+    @!events = [];
+    return $elems;
+}
 
 =begin pod
 
@@ -73,6 +78,7 @@ Test::HTTP::Server - Simple to use wrapper around HTTP::Server::Async designed f
   is @events[0].path, '/index.html', "Expected path called";
   is @events[0].method, 'GET', "Expected method used";
   is @events[0].code, 200, "Expected response code";
+  $test-server.clear-events;
   
 =head1 DESCRIPTION
 

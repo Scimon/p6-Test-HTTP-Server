@@ -23,6 +23,7 @@ SYNOPSIS
     is @events[0].path, '/index.html', "Expected path called";
     is @events[0].method, 'GET', "Expected method used";
     is @events[0].code, 200, "Expected response code";
+    $test-server.clear-events;
 
 DESCRIPTION
 ===========
