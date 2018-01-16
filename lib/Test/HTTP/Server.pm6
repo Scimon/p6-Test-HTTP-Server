@@ -3,7 +3,10 @@ use Test::Util::ServerPort;
 use HTTP::Server::Async;
 use Test::HTTP::Server::Event;
 
-unit class Test::HTTP::Server:ver<0.0.1>:auth<github:scimon>;
+multi sub get-type ( Str $path ) { 'text/plain' }
+multi sub get-type ( Str $path where * ~~ rx/\. html $/ ) { 'text/html' }
+
+unit class Test::HTTP::Server:ver<0.1.0>:auth<github:scimon>;
 
 has Int $.port;
 has Str $.dir;
@@ -30,6 +33,7 @@ submethod BUILD( :$dir ) {
 method !handle-request( $request, $response ) {
     if ( "{$.dir}{$request.uri}".IO.f ) {
         self!register-event( :code(200), :path($request.uri), :method($request.method) );
+        $response.headers<Content-Type> = get-type( $request.uri );
         $response.close("{$.dir}{$request.uri}".IO.slurp);
     } else {
         self!register-event( :code(404), :path($request.uri), :method($request.method) );
@@ -89,6 +93,23 @@ Test::HTTP::Server - Simple to use wrapper around HTTP::Server::Async designed f
 
 Test::HTTP::Server is a wrapper around HTTP::Server::Asnyc designed to allow for simple Mock testing of web services. 
 
+The constructor accepts a <dir> and an optional <port> parameter.
+
+The server will server up any files that exist in <dir> on the given port (if not port is given then one will be assigned, the <.port> method can be acccesed to find what port is being used).
+
+All requests are logged in a basic even log allowing for testing. If you make multiple async requests to the server the ordering of the events list cannot be assured and tests should be written based on this.
+
+If a file doesn't exist then the server will return a 404.
+
+Currently the server returns all files as 'text/plain' except ones ending, '.html'.
+
+=head2 TODO
+
+Add additional MIME Types.
+
+This is a very basic version of the server in order to allow other development to be worked on. Planned is to allow a config.yml file to exist in the top level directory. If the file exists it will allow you control different paths and their responses.
+
+This is intended to allow the system to replicate errors to allow for error testing.
 
 =head1 AUTHOR
 

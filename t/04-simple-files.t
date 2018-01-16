@@ -8,11 +8,20 @@ my $server = init_env();
 
 my $ua = HTTP::UserAgent.new();
 
-for { "file.txt" => &text-content, "file.html" => &html-content }.kv -> $file, &func {
+for { "file.txt" => {
+            "func" => &text-content,
+            "type" => "text/plain"
+        },
+      "file.html" => {
+            "func" => &html-content,
+            "type" => "text/html"
+        },
+    }.kv -> $file, %details {
     subtest "$file reading", {
         my $response = $ua.get( "http://localhost:{$server.port}/{$file}" );
         is $response.code, 200, "File exists. So it's a 200";
-        is $response.content, &func(), "File content matches";
+        is $response.content, %details<func>(), "File content matches";
+        is $response.field('Content-Type').values, [ %details<type> ], "Content type is correct";
 
         my @events = $server.events;
         is @events[0].path, "/{$file}", "Expected path called";
