@@ -24,7 +24,7 @@ sub init_env() {
     my $folder = tempdir();
     
     my $fh = "$folder/file.txt".IO.open :w;
-    $fh.put( text-content() );
+    $fh.print( text-content() );
     
     $fh.close;
     

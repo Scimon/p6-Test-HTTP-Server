@@ -3,7 +3,7 @@ use Test::Util::ServerPort;
 use HTTP::Server::Async;
 use Test::HTTP::Server::Event;
 
-unit class Test::HTTP::Server:ver<0.0.1>;
+unit class Test::HTTP::Server:ver<0.0.1>:auth<github:scimon>;
 
 has Int $.port;
 has Str $.dir;
@@ -28,16 +28,14 @@ submethod BUILD( :$dir ) {
 }
 
 method !handle-request( $request, $response ) {
-
     if ( "{$.dir}{$request.uri}".IO.f ) {
         self!register-event( :code(200), :path($request.uri), :method($request.method) );
-        $response.close("{$.dir}{$request.uri}".IO.slurp.chomp);
+        $response.close("{$.dir}{$request.uri}".IO.slurp);
     } else {
         self!register-event( :code(404), :path($request.uri), :method($request.method) );
         $response.status = 404;
         $response.close();
     }
-    
 }
 
 method !register-event( :$code, :$path, :$method ) {
