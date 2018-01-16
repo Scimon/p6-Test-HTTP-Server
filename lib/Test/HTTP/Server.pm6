@@ -93,9 +93,9 @@ Test::HTTP::Server - Simple to use wrapper around HTTP::Server::Async designed f
 
 Test::HTTP::Server is a wrapper around HTTP::Server::Asnyc designed to allow for simple Mock testing of web services. 
 
-The constructor accepts a <dir> and an optional <port> parameter.
+The constructor accepts a 'dir' and an optional 'port' parameter.
 
-The server will server up any files that exist in <dir> on the given port (if not port is given then one will be assigned, the <.port> method can be acccesed to find what port is being used).
+The server will server up any files that exist in 'dir' on the given port (if not port is given then one will be assigned, the '.port' method can be acccesed to find what port is being used).
 
 All requests are logged in a basic even log allowing for testing. If you make multiple async requests to the server the ordering of the events list cannot be assured and tests should be written based on this.
 
