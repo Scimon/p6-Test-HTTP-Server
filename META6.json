@@ -5,7 +5,8 @@
   "build-depends" : [ ],
   "depends" : [
     "HTTP::Server::Async",
-    "Test::Util::ServerPort"
+      "Test::Util::ServerPort",
+      "File::Temp"
   ],
   "description" : "Simple to use wrapper around HTTP::Server::Async designed for tests",
   "license" : "Artistic-2.0",
