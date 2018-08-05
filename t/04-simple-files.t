@@ -18,7 +18,7 @@ for { "file.txt" => {
         },
     }.kv -> $file, %details {
     subtest "$file reading", {
-        my $response = $ua.get( "http://localhost:{$server.port}/{$file}" );
+        my $response = $ua.get( "http://127.0.0.1:{$server.port}/{$file}" );
         is $response.code, 200, "File exists. So it's a 200";
         is $response.content, %details<func>(), "File content matches";
         is $response.field('Content-Type').values, [ %details<type> ], "Content type is correct";
