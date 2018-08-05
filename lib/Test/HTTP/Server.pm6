@@ -6,7 +6,7 @@ use Test::HTTP::Server::Event;
 multi sub get-type ( Str $path ) { 'text/plain' }
 multi sub get-type ( Str $path where * ~~ rx/\. html $/ ) { 'text/html' }
 
-unit class Test::HTTP::Server:ver<0.1.0>:auth<github:scimon>;
+unit class Test::HTTP::Server:ver<0.2.0>:auth<github:scimon>;
 
 has Int $.port;
 has Str $.dir;

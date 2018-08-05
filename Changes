@@ -1,4 +1,6 @@
 Revision history for Test-HTTP-Server
 
 {{$NEXT}}
+
+0.2.0  2018-08-05T12:59:52+01:00
    - General fixes to use 127.0.0.1 
