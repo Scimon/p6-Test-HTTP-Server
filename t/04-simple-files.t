@@ -38,11 +38,7 @@ for { "file.txt" => {
         my $response = $ua.get( "http://127.0.0.1:{$server.port}/{$file}" );
         is $response.code, 200, "File exists. So it's a 200";
         my $data = get-content($file, %details<bin>);
-        if ( %details<bin> ) {
-            is-deeply $response.content, $data, "File content matches";
-        } else {
-            is $response.content, $data, "File content matches";
-        }
+        is-deeply $response.content, $data, "File content matches";
         is $response.field('Content-Type').values, [ %details<type> ], "Content type is correct";
 
         my @events = $server.events;
@@ -59,11 +55,11 @@ sub init_env() {
     Test::HTTP::Server.new( :dir( "{$*PROGRAM.dirname}/t04data/" ) );
 }
 
-sub get-content ( $file, $bin ) {
-    if ( $bin ) {
-        Buf.new( "{$*PROGRAM.dirname}/t04data/{$file}".IO.slurp( :bin ) );
-    } else {
-        "{$*PROGRAM.dirname}/t04data/{$file}".IO.slurp();
-    }
+multi sub get-content ( $file, $bin where *.so ) {
+    Buf.new( "{$*PROGRAM.dirname}/t04data/{$file}".IO.slurp( :bin ) );
+}
+
+multi sub get-content ( $file, $bin where !*.so ) {
+    "{$*PROGRAM.dirname}/t04data/{$file}".IO.slurp();
 }
 
