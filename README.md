@@ -50,6 +50,12 @@ Currently the server returns all files as 'text/plain' except files with the fol
 
   * `gif` => `image/gif`
 
+  * `js` => `application/javascript`
+
+  * `json` => `application/json`
+
+  * `css` => `text/css`
+
 TODO
 ----
 

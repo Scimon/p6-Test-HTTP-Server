@@ -25,8 +25,11 @@ submethod BUILD( :$dir ) {
         'html' => 'text/html',
         'png'  => 'image/png',
         'jpg'  => 'image/jpeg',
-        'jpeg'  => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
         'gif'  => 'image/gif',
+        'js'   => 'application/javascript',
+        'json' => 'application/json',
+        'css'  => 'text/css',
     );
     
     $!server = HTTP::Server::Async.new( :port($!port) );
@@ -114,11 +117,15 @@ If a file doesn't exist then the server will return a 404.
 Currently the server returns all files as 'text/plain' except files with the follwing extensions :
 
 =item1 C<html> => C<text/html>
-=item1 C<png> => C<image/png>
-=item1 C<jpg> => C<image/jpeg>
+=item1 C<png>  => C<image/png>
+=item1 C<jpg>  => C<image/jpeg>
 =item1 C<jpeg> => C<image/jpeg>
-=item1 C<gif> => C<image/gif>
-                                                                                  
+=item1 C<gif>  => C<image/gif>
+=item1 C<js>   => C<application/javascript>
+=item1 C<json> => C<application/json>
+=item1 C<css>  => C<text/css>
+
+
 =head2 TODO
 
 This is a very basic version of the server in order to allow other development to be worked on. Planned is to allow a config.yml file to exist in the top level directory. If the file exists it will allow you control different paths and their responses.

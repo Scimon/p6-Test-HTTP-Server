@@ -32,6 +32,18 @@ for { "file.txt" => {
             "bin" => True,
             "type" => "image/gif",
         },
+       "file.js" => {
+            "bin" => False,
+            "type" => "application/javascript",
+        },
+       "file.json" => {
+            "bin" => False,
+            "type" => "application/json",
+        },
+       "file.css" => {
+            "bin" => False,
+            "type" => "text/css",
+        },
 
     }.kv -> $file, %details {
     subtest "$file reading", {
