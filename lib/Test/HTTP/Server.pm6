@@ -36,14 +36,14 @@ submethod BUILD( :$dir ) {
     
 }
 
-method get-type ( $path ) {
+method !get-type ( $path ) {
     %!type-map{$path.IO.extension} // 'text/plain';
 }
 
 method !handle-request( $request, $response ) {
     if ( "{$.dir}{$request.uri}".IO.f ) {
         self!register-event( :code(200), :path($request.uri), :method($request.method) );
-        $response.headers<Content-Type> = self.get-type( "{$.dir}{$request.uri}" );
+        $response.headers<Content-Type> = self!get-type( "{$.dir}{$request.uri}" );
         $response.close("{$.dir}{$request.uri}".IO.slurp(:bin));
     } else {
         self!register-event( :code(404), :path($request.uri), :method($request.method) );
