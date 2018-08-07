@@ -3,7 +3,7 @@ use Test::Util::ServerPort;
 use HTTP::Server::Async;
 use Test::HTTP::Server::Event;
 
-unit class Test::HTTP::Server:ver<0.2.0>:auth<github:scimon>;
+unit class Test::HTTP::Server:ver<0.2.1>:auth<github:scimon>;
 
 has Int $.port;
 has Str $.dir;
