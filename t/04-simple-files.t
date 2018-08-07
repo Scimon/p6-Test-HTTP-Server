@@ -9,18 +9,40 @@ my $server = init_env();
 my $ua = HTTP::UserAgent.new();
 
 for { "file.txt" => {
-            "func" => &text-content,
+            "bin" => False,
             "type" => "text/plain"
         },
       "file.html" => {
-            "func" => &html-content,
+            "bin" => False,            
             "type" => "text/html"
         },
+       "file.png" => {
+            "bin" => True,
+            "type" => "image/png",
+        },
+       "file.jpg" => {
+            "bin" => True,
+            "type" => "image/jpeg",
+        },
+       "file.jpeg" => {
+            "bin" => True,
+            "type" => "image/jpeg",
+        },
+       "file.gif" => {
+            "bin" => True,
+            "type" => "image/gif",
+        },
+
     }.kv -> $file, %details {
     subtest "$file reading", {
         my $response = $ua.get( "http://127.0.0.1:{$server.port}/{$file}" );
         is $response.code, 200, "File exists. So it's a 200";
-        is $response.content, %details<func>(), "File content matches";
+        my $data = get-content($file, %details<bin>);
+        if ( %details<bin> ) {
+            is-deeply $response.content, $data, "File content matches";
+        } else {
+            is $response.content, $data, "File content matches";
+        }
         is $response.field('Content-Type').values, [ %details<type> ], "Content type is correct";
 
         my @events = $server.events;
@@ -33,35 +55,15 @@ for { "file.txt" => {
         
 done-testing;
 
-
 sub init_env() {
-    my $folder = tempdir();
-    
-    for { "file.txt" => &text-content, "file.html" => &html-content }.kv -> $name, &func {
-        my $fh = "$folder/{$name}".IO.open :w;
-        $fh.print( &func() );
-        $fh.close;
+    Test::HTTP::Server.new( :dir( "{$*PROGRAM.dirname}/t04data/" ) );
+}
+
+sub get-content ( $file, $bin ) {
+    if ( $bin ) {
+        Buf.new( "{$*PROGRAM.dirname}/t04data/{$file}".IO.slurp( :bin ) );
+    } else {
+        "{$*PROGRAM.dirname}/t04data/{$file}".IO.slurp();
     }
-    
-    Test::HTTP::Server.new( :dir($folder) );
-
 }
 
-sub text-content() {
-    q:to/EOF/;
-    Text file
-    EOF
-}
-
-sub html-content() {
-    q:to/EOF/;
-    <html>
-    <head>
-        <title>Test HTML</title>
-    </head>
-    <body>
-        <h1>Test</h1>
-    </body>
-    </html>
-    EOF
-}

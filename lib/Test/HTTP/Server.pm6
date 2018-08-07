@@ -3,9 +3,6 @@ use Test::Util::ServerPort;
 use HTTP::Server::Async;
 use Test::HTTP::Server::Event;
 
-multi sub get-type ( Str $path ) { 'text/plain' }
-multi sub get-type ( Str $path where * ~~ rx/\. html $/ ) { 'text/html' }
-
 unit class Test::HTTP::Server:ver<0.2.0>:auth<github:scimon>;
 
 has Int $.port;
@@ -15,6 +12,7 @@ has Supplier $!server-event-writer;
 has Supply $!server-event-reader;
 has Channel $!event-queue;
 has @!events;
+has %!type-map;
 
 submethod BUILD( :$dir ) {
     $!port = get-unused-port();
@@ -23,18 +21,30 @@ submethod BUILD( :$dir ) {
     $!server-event-reader = $!server-event-writer.Supply;
     $!server-event-reader.tap( -> $d { self!store-event( $d ) } );
     $!event-queue = Channel.new();
+    %!type-map = (
+        'html' => 'text/html',
+        'png'  => 'image/png',
+        'jpg'  => 'image/jpeg',
+        'jpeg'  => 'image/jpeg',
+        'gif'  => 'image/gif',
+    );
     
     $!server = HTTP::Server::Async.new( :port($!port) );
     
     $!server.handler( -> $req, $res { self!handle-request( $req, $res ) } );
     $!server.listen();
+    
+}
+
+method get-type ( $path ) {
+    %!type-map{$path.IO.extension} // 'text/plain';
 }
 
 method !handle-request( $request, $response ) {
     if ( "{$.dir}{$request.uri}".IO.f ) {
         self!register-event( :code(200), :path($request.uri), :method($request.method) );
-        $response.headers<Content-Type> = get-type( $request.uri );
-        $response.close("{$.dir}{$request.uri}".IO.slurp);
+        $response.headers<Content-Type> = self.get-type( "{$.dir}{$request.uri}" );
+        $response.close("{$.dir}{$request.uri}".IO.slurp(:bin));
     } else {
         self!register-event( :code(404), :path($request.uri), :method($request.method) );
         $response.status = 404;
