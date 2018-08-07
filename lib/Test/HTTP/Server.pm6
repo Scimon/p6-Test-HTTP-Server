@@ -121,8 +121,6 @@ Currently the server returns all files as 'text/plain' except files with the fol
                                                                                   
 =head2 TODO
 
-Add additional MIME Types.
-
 This is a very basic version of the server in order to allow other development to be worked on. Planned is to allow a config.yml file to exist in the top level directory. If the file exists it will allow you control different paths and their responses.
 
 This is intended to allow the system to replicate errors to allow for error testing.
