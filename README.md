@@ -38,12 +38,26 @@ All requests are logged in a basic even log allowing for testing. If you make mu
 
 If a file doesn't exist then the server will return a 404.
 
-Currently the server returns all files as 'text/plain' except ones ending, '.html'.
+Currently the server returns all files as 'text/plain' except files with the follwing extensions :
+
+  * `html` => `text/html`
+
+  * `png` => `image/png`
+
+  * `jpg` => `image/jpeg`
+
+  * `jpeg` => `image/jpeg`
+
+  * `gif` => `image/gif`
+
+  * `js` => `application/javascript`
+
+  * `json` => `application/json`
+
+  * `css` => `text/css`
 
 TODO
 ----
-
-Add additional MIME Types.
 
 This is a very basic version of the server in order to allow other development to be worked on. Planned is to allow a config.yml file to exist in the top level directory. If the file exists it will allow you control different paths and their responses.
 
@@ -60,4 +74,3 @@ COPYRIGHT AND LICENSE
 Copyright 2018 Simon Proctor
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
-
