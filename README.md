@@ -38,7 +38,17 @@ All requests are logged in a basic even log allowing for testing. If you make mu
 
 If a file doesn't exist then the server will return a 404.
 
-Currently the server returns all files as 'text/plain' except ones ending, '.html'.
+Currently the server returns all files as 'text/plain' except files with the follwing extensions :
+
+  * `html` => `text/html`
+
+  * `png` => `image/png`
+
+  * `jpg` => `image/jpeg`
+
+  * `jpeg` => `image/jpeg`
+
+  * `gif` => `image/gif`
 
 TODO
 ----

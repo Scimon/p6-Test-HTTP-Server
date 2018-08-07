@@ -111,8 +111,14 @@ All requests are logged in a basic even log allowing for testing. If you make mu
 
 If a file doesn't exist then the server will return a 404.
 
-Currently the server returns all files as 'text/plain' except ones ending, '.html'.
+Currently the server returns all files as 'text/plain' except files with the follwing extensions :
 
+=item1 C<html> => C<text/html>
+=item1 C<png> => C<image/png>
+=item1 C<jpg> => C<image/jpeg>
+=item1 C<jpeg> => C<image/jpeg>
+=item1 C<gif> => C<image/gif>
+                                                                                  
 =head2 TODO
 
 Add additional MIME Types.
