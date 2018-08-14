@@ -44,6 +44,10 @@ for { "file.txt" => {
             "bin" => False,
             "type" => "text/css",
         },
+       "file.xml" => {
+            "bin" => False,
+            "type" => "application/xml",
+        },
 
     }.kv -> $file, %details {
     subtest "$file reading", {

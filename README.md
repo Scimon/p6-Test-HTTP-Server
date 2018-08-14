@@ -56,6 +56,50 @@ Currently the server returns all files as 'text/plain' except files with the fol
 
   * `css` => `text/css`
 
+  * `xml` => `application/xml`
+
+CONFIG
+------
+
+You can include a file called `config.yml` in the file which allows for additional control over the responses. The following keys are available :
+
+### mime
+
+Hash representation of extension and mime type header allows adding additional less common mime types.
+
+### paths
+
+Hash where keys are paths to match (including leading `/`), values are hashes with the currently allowed keys :
+
+#### returns
+
+A list of commands to specify the return result, currently valid values. Any 3 digit code will return that HTTP status. "file" returns the file at the given path.
+
+Each time a request is made to the given path the next repsonse in the list will be given. If the end of the list is reached then this result will be returned from then on.
+
+METHODS
+-------
+
+### events
+
+Returns the list of event objects giving the events registered to the server. Note if async requests are bineg made the order of events cannot be assured.
+
+Events objects have the following attributes :
+
+  * `path` Path of the request
+
+  * `method` Method of the request
+
+  * `code` HTTP code of the response 
+
+### clear-events
+
+Clear the event list allowing the server to be reused in further tests.
+
+### mime-types
+
+Returns a hash of mime-types registered with the server including any added in `config.yml` file. 
+
 TODO
 ----
 

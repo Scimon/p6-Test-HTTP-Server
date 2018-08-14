@@ -1,0 +1,11 @@
+mime:
+  atom: application/atom+xml
+  yml: text/yaml
+paths:
+  /not-found:
+    returns:
+      - 404
+  /config.yml:
+    returns:
+      - 404
+      - file

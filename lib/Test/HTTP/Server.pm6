@@ -2,6 +2,7 @@ use v6.c;
 use Test::Util::ServerPort;
 use HTTP::Server::Async;
 use Test::HTTP::Server::Event;
+use YAMLish;
 
 unit class Test::HTTP::Server:ver<0.2.1>:auth<github:scimon>;
 
@@ -13,6 +14,8 @@ has Supply $!server-event-reader;
 has Channel $!event-queue;
 has @!events;
 has %!type-map;
+has %!path-index;
+has %!path-rules;
 
 submethod BUILD( :$dir ) {
     $!port = get-unused-port();
@@ -30,13 +33,30 @@ submethod BUILD( :$dir ) {
         'js'   => 'application/javascript',
         'json' => 'application/json',
         'css'  => 'text/css',
+        'xml'  => 'application/xml',
     );
+    %!path-index = ();
+    %!path-rules = ();
     
     $!server = HTTP::Server::Async.new( :port($!port) );
     
     $!server.handler( -> $req, $res { self!handle-request( $req, $res ) } );
     $!server.listen();
+
+    if ( "{$!dir}config.yml".IO.f ) {
+        my %data = load-yaml( "{$!dir}config.yml".IO.slurp );
+        if %data<mime>:exists {
+            %!type-map = ( |%!type-map, |%data<mime> );
+        }
+        if %data<paths>:exists {
+            %!path-rules = (|%data<paths>);
+        }
+    }
     
+}
+
+method mime-types() {
+    return %!type-map;
 }
 
 method !get-type ( $path ) {
@@ -44,12 +64,28 @@ method !get-type ( $path ) {
 }
 
 method !handle-request( $request, $response ) {
-    if ( "{$.dir}{$request.uri}".IO.f ) {
-        self!register-event( :code(200), :path($request.uri), :method($request.method) );
-        $response.headers<Content-Type> = self!get-type( "{$.dir}{$request.uri}" );
-        $response.close("{$.dir}{$request.uri}".IO.slurp(:bin));
+    my $uri = $request.uri;
+    if ( %!path-rules{$uri}:exists ) {
+        %!path-index{$uri} //= 0;
+        my $rule =  %!path-rules{$uri}<returns>[%!path-index{$uri}];
+        if ( $rule ~~ m/^\d ** 3$/ ) {
+            self!register-event( :code($rule), :path($uri), :method($request.method) );
+            $response.status = $rule;
+            $response.close();
+        } elsif ( $rule ~~ "file" ) {
+            self!register-event( :code(200), :path($uri), :method($request.method) );
+            $response.headers<Content-Type> = self!get-type( "{$.dir}{$uri}" );
+            $response.close("{$.dir}{$uri}".IO.slurp(:bin));
+        }
+        
+        %!path-index{$uri}++ unless %!path-index{$uri} == %!path-rules{$uri}<returns>.elems-1;
+    }
+    elsif ( "{$.dir}{$uri}".IO.f ) {
+        self!register-event( :code(200), :path($uri), :method($request.method) );
+        $response.headers<Content-Type> = self!get-type( "{$.dir}{$uri}" );
+        $response.close("{$.dir}{$uri}".IO.slurp(:bin));
     } else {
-        self!register-event( :code(404), :path($request.uri), :method($request.method) );
+        self!register-event( :code(404), :path($uri), :method($request.method) );
         $response.status = 404;
         $response.close();
     }
@@ -74,6 +110,7 @@ method events() {
 method clear-events() {
     my $elems = @!events.elems;
     @!events = [];
+    %!path-index = ();
     return $elems;
 }
 
@@ -124,7 +161,48 @@ Currently the server returns all files as 'text/plain' except files with the fol
 =item1 C<js>   => C<application/javascript>
 =item1 C<json> => C<application/json>
 =item1 C<css>  => C<text/css>
+=item1 C<xml>  => C<application/xml>
 
+=head2 CONFIG
+
+You can include a file called C<config.yml> in the file which allows for additional control over the responses.
+The following keys are available :
+
+=head3 mime
+
+Hash representation of extension and mime type header allows adding additional less common mime types.
+
+=head3 paths
+
+Hash where keys are paths to match (including leading C</>), values are hashes with the currently allowed keys :
+
+=head4 returns
+
+A list of commands to specify the return result, currently valid values. Any 3 digit code will return that HTTP status.
+"file" returns the file at the given path.
+
+Each time a request is made to the given path the next repsonse in the list will be given. If the end of the list is reached then this result will
+be returned from then on.
+
+=head2 METHODS
+
+=head3 events
+
+Returns the list of event objects giving the events registered to the server. Note if async requests are bineg made the order of events cannot be assured.
+
+Events objects have the following attributes :
+
+=item1 C<path> Path of the request
+=item1 C<method> Method of the request
+=item1 C<code> HTTP code of the response 
+
+=head3 clear-events
+
+Clear the event list allowing the server to be reused in further tests.
+
+=head3 mime-types
+
+Returns a hash of mime-types registered with the server including any added in C<config.yml> file. 
 
 =head2 TODO
 
