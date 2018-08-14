@@ -14,6 +14,8 @@ has Supply $!server-event-reader;
 has Channel $!event-queue;
 has @!events;
 has %!type-map;
+has %!path-index;
+has %!path-rules;
 
 submethod BUILD( :$dir ) {
     $!port = get-unused-port();
@@ -33,6 +35,8 @@ submethod BUILD( :$dir ) {
         'css'  => 'text/css',
         'xml'  => 'application/xml',
     );
+    %!path-index = ();
+    %!path-rules = ();
     
     $!server = HTTP::Server::Async.new( :port($!port) );
     
@@ -43,6 +47,9 @@ submethod BUILD( :$dir ) {
         my %data = load-yaml( "{$!dir}config.yml".IO.slurp );
         if %data<mime>:exists {
             %!type-map = ( |%!type-map, |%data<mime> );
+        }
+        if %data<paths>:exists {
+            %!path-rules = (|%data<paths>);
         }
     }
     
@@ -57,12 +64,28 @@ method !get-type ( $path ) {
 }
 
 method !handle-request( $request, $response ) {
-    if ( "{$.dir}{$request.uri}".IO.f ) {
-        self!register-event( :code(200), :path($request.uri), :method($request.method) );
-        $response.headers<Content-Type> = self!get-type( "{$.dir}{$request.uri}" );
-        $response.close("{$.dir}{$request.uri}".IO.slurp(:bin));
+    my $uri = $request.uri;
+    if ( %!path-rules{$uri}:exists ) {
+        %!path-index{$uri} //= 0;
+        my $rule =  %!path-rules{$uri}<returns>[%!path-index{$uri}];
+        if ( $rule ~~ m/^\d ** 3$/ ) {
+            self!register-event( :code($rule), :path($uri), :method($request.method) );
+            $response.status = $rule;
+            $response.close();
+        } elsif ( $rule ~~ "file" ) {
+            self!register-event( :code(200), :path($uri), :method($request.method) );
+            $response.headers<Content-Type> = self!get-type( "{$.dir}{$uri}" );
+            $response.close("{$.dir}{$uri}".IO.slurp(:bin));
+        }
+        
+        %!path-index{$uri}++ unless %!path-index{$uri} == %!path-rules{$uri}<returns>.elems-1;
+    }
+    elsif ( "{$.dir}{$uri}".IO.f ) {
+        self!register-event( :code(200), :path($uri), :method($request.method) );
+        $response.headers<Content-Type> = self!get-type( "{$.dir}{$uri}" );
+        $response.close("{$.dir}{$uri}".IO.slurp(:bin));
     } else {
-        self!register-event( :code(404), :path($request.uri), :method($request.method) );
+        self!register-event( :code(404), :path($uri), :method($request.method) );
         $response.status = 404;
         $response.close();
     }
@@ -87,6 +110,7 @@ method events() {
 method clear-events() {
     my $elems = @!events.elems;
     @!events = [];
+    %!path-index = ();
     return $elems;
 }
 
@@ -147,6 +171,18 @@ The following keys are available :
 =head3 mime
 
 Hash representation of extension and mime type header allows adding additional less common mime types.
+
+=head3 paths
+
+Hash where keys are paths to match (including leading C</>), values are hashes with the currently allowed keys :
+
+=head4 returns
+
+A list of commands to specify the return result, currently valid values. Any 3 digit code will return that HTTP status.
+"file" returns the file at the given path.
+
+Each time a request is made to the given path the next repsonse in the list will be given. If the end of the list is reached then this result will
+be returned from then on.
 
 =head2 METHODS
 
