@@ -8,7 +8,8 @@
     "HTTP::Server::Async",
     "Test::Util::ServerPort",
     "File::Temp",
-    "HTTP::UserAgent"
+    "HTTP::UserAgent",
+    "YAMLish"
   ],
   "description" : "Simple to use wrapper around HTTP::Server::Async designed for tests",
   "license" : "Artistic-2.0",

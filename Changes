@@ -1,6 +1,7 @@
 Revision history for Test-HTTP-Server
 
 {{$NEXT}}
+   - Added xml MIME type
 
 0.2.1  2018-08-07T10:42:42+01:00
    - Added addtional MIME types, html, png, jpg, gif, js, css and json

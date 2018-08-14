@@ -1,0 +1,6 @@
+mime:
+  atom: application/atom+xml
+paths:
+  not-found:
+    returns:
+      - 404

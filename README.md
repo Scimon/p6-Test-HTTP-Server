@@ -56,6 +56,38 @@ Currently the server returns all files as 'text/plain' except files with the fol
 
   * `css` => `text/css`
 
+  * `xml` => `application/xml`
+
+CONFIG
+------
+
+You can include a file called `config.yml` in the file which allows for additional control over the responses. 
+
+### 
+
+METHODS
+-------
+
+### events
+
+Returns the list of event objects giving the events registered to the server. Note if async requests are bineg made the order of events cannot be assured.
+
+Events objects have the following attributes :
+
+  * `path` Path of the request
+
+  * `method` Method of the request
+
+  * `code` HTTP code of the response 
+
+### clear-events
+
+Clear the event list allowing the server to be reused in further tests.
+
+### mime-types
+
+Returns a hash of mime-types registered with the server including any added in `config.yml` file. 
+
 TODO
 ----
 
