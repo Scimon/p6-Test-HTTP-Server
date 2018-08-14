@@ -94,7 +94,7 @@ Events objects have the following attributes :
 
 ### clear-events
 
-Clear the event list allowing the server to be reused in further tests.
+Clear the event list allowing the server to be reused in further tests. Calling this method will also reset all the indexes on 'returns' in the config files. Further requests will start from the first registered resonse.
 
 ### mime-types
 

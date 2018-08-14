@@ -199,6 +199,7 @@ Events objects have the following attributes :
 =head3 clear-events
 
 Clear the event list allowing the server to be reused in further tests.
+Calling this method will also reset all the indexes on 'returns' in the config files. Further requests will start from the first registered resonse.
 
 =head3 mime-types
 
