@@ -1,7 +1,10 @@
 Revision history for Test-HTTP-Server
 
 {{$NEXT}}
+
+0.3.0  2018-08-14T20:30:24+01:00
    - Added xml MIME type
+   - Added initial config.yml file with basic rules.
 
 0.2.1  2018-08-07T10:42:42+01:00
    - Added addtional MIME types, html, png, jpg, gif, js, css and json
