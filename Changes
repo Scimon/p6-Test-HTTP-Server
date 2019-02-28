@@ -2,6 +2,9 @@ Revision history for Test-HTTP-Server
 
 {{$NEXT}}
 
+0.3.1  2019-02-28T15:09:17Z
+   - Force updated version of HTTP::Server::Async post HTTP::Server removal.
+
 0.3.0  2018-08-14T20:30:24+01:00
    - Added xml MIME type
    - Added initial config.yml file with basic rules.

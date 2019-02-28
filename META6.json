@@ -5,7 +5,7 @@
   ],
   "build-depends" : [ ],
   "depends" : [
-    "HTTP::Server::Async",
+    "HTTP::Server::Async:ver<0.2.0+>",
     "Test::Util::ServerPort",
     "File::Temp",
     "HTTP::UserAgent",
@@ -28,5 +28,5 @@
     "File::Temp",
     "HTTP::UserAgent"
   ],
-  "version" : "0.3.0"
+  "version" : "0.3.1"
 }
