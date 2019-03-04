@@ -2,6 +2,10 @@ Revision history for Test-HTTP-Server
 
 {{$NEXT}}
 
+0.3.2  2019-03-04T12:34:33Z
+   - Move from use v6.c to use v6
+   - Added META.json test
+
 0.3.1  2019-02-28T15:09:17Z
    - Force updated version of HTTP::Server::Async post HTTP::Server removal.
 

@@ -1,10 +1,10 @@
-use v6.c;
+use v6;
 use Test::Util::ServerPort;
 use HTTP::Server::Async;
 use Test::HTTP::Server::Event;
 use YAMLish;
 
-unit class Test::HTTP::Server:ver<0.3.1>:auth<github:scimon>;
+unit class Test::HTTP::Server:ver<0.3.2>:auth<github:scimon>;
 
 has Int $.port;
 has Str $.dir;
