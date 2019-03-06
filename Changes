@@ -14,7 +14,7 @@ Revision history for Test-HTTP-Server
    - Added initial config.yml file with basic rules.
 
 0.2.1  2018-08-07T10:42:42+01:00
-   - Added addtional MIME types, html, png, jpg, gif, js, css and json
+   - Added additional MIME types, html, png, jpg, gif, js, css and json
 
 0.2.0  2018-08-05T12:59:52+01:00
    - General fixes to use 127.0.0.1 

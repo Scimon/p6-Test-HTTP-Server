@@ -6,3 +6,5 @@
 /resources/*.dylib
 .precomp/
 /Test-HTTP-Server-*
+TestHTTPServer.iml
+.idea/

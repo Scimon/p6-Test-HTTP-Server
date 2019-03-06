@@ -141,17 +141,17 @@ Test::HTTP::Server - Simple to use wrapper around HTTP::Server::Async designed f
   
 =head1 DESCRIPTION
 
-Test::HTTP::Server is a wrapper around HTTP::Server::Asnyc designed to allow for simple Mock testing of web services. 
+Test::HTTP::Server is a wrapper around HTTP::Server::Async designed to allow for simple Mock testing of web services.
 
 The constructor accepts a 'dir' and an optional 'port' parameter.
 
-The server will server up any files that exist in 'dir' on the given port (if not port is given then one will be assigned, the '.port' method can be acccesed to find what port is being used).
+The server will server up any files that exist in 'dir' on the given port (if not port is given then one will be assigned, the '.port' method can be accessed to find what port is being used).
 
 All requests are logged in a basic even log allowing for testing. If you make multiple async requests to the server the ordering of the events list cannot be assured and tests should be written based on this.
 
 If a file doesn't exist then the server will return a 404.
 
-Currently the server returns all files as 'text/plain' except files with the follwing extensions :
+Currently the server returns all files as 'text/plain' except files with the following extensions :
 
 =item1 C<html> => C<text/html>
 =item1 C<png>  => C<image/png>
@@ -181,14 +181,14 @@ Hash where keys are paths to match (including leading C</>), values are hashes w
 A list of commands to specify the return result, currently valid values. Any 3 digit code will return that HTTP status.
 "file" returns the file at the given path.
 
-Each time a request is made to the given path the next repsonse in the list will be given. If the end of the list is reached then this result will
+Each time a request is made to the given path the next response in the list will be given. If the end of the list is reached then this result will
 be returned from then on.
 
 =head2 METHODS
 
 =head3 events
 
-Returns the list of event objects giving the events registered to the server. Note if async requests are bineg made the order of events cannot be assured.
+Returns the list of event objects giving the events registered to the server. Note if async requests are being made the order of events cannot be assured.
 
 Events objects have the following attributes :
 
@@ -199,7 +199,7 @@ Events objects have the following attributes :
 =head3 clear-events
 
 Clear the event list allowing the server to be reused in further tests.
-Calling this method will also reset all the indexes on 'returns' in the config files. Further requests will start from the first registered resonse.
+Calling this method will also reset all the indexes on 'returns' in the config files. Further requests will start from the first registered response.
 
 =head3 mime-types
 
