@@ -2,6 +2,10 @@ Revision history for Test-HTTP-Server
 
 {{$NEXT}}
 
+0.4.0  2019-03-08T11:40:31Z
+   - Removed META.json test for now. Issues with building the module.
+   - Fixed version of HTTP::Server::Async to use correctly. 
+
 0.3.2  2019-03-04T12:34:33Z
    - Move from use v6.c to use v6
    - Added META.json test
