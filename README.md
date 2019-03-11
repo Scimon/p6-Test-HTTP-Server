@@ -73,7 +73,13 @@ Hash where keys are paths to match (including leading `/`), values are hashes wi
 
 #### returns
 
-A list of commands to specify the return result, currently valid values. Any 3 digit code will return that HTTP status. "file" returns the file at the given path.
+A list of commands to specify the return result, currently valid values.
+
+  * Any 3 digit code => returns that HTTP status.
+
+  * "file" => returns the file at the given path.
+
+  * "loop" => goes to the top of the list and processes that
 
 Each time a request is made to the given path the next response in the list will be given. If the end of the list is reached then this result will be returned from then on.
 

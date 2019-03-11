@@ -1,4 +1,4 @@
-use v6.c;
+use v6;
 use Test;
 use File::Temp;
 use Test::HTTP::Server;

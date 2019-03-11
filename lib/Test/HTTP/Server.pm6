@@ -63,22 +63,32 @@ method !get-type ( $path ) {
     %!type-map{$path.IO.extension} // 'text/plain';
 }
 
+method !process-return-rule( $uri, $request, $response ) {
+    %!path-index{$uri} //= 0;
+    my $rule =  %!path-rules{$uri}<returns>[%!path-index{$uri}];
+
+    if ( $rule ~~ "loop" ) {
+        %!path-index{$uri} = 0;
+        $rule =  %!path-rules{$uri}<returns>[%!path-index{$uri}];
+    }
+
+    if ( $rule ~~ m/^\d ** 3$/ ) {
+        self!register-event( :code($rule), :path($uri), :method($request.method) );
+        $response.status = $rule;
+        $response.close();
+    } elsif ( $rule ~~ "file" ) {
+        self!register-event( :code(200), :path($uri), :method($request.method) );
+        $response.headers<Content-Type> = self!get-type( "{$.dir}{$uri}" );
+        $response.close("{$.dir}{$uri}".IO.slurp(:bin));
+    }
+        
+    %!path-index{$uri}++ unless %!path-index{$uri} == %!path-rules{$uri}<returns>.elems-1;
+}
+
 method !handle-request( $request, $response ) {
     my $uri = $request.uri;
     if ( %!path-rules{$uri}:exists ) {
-        %!path-index{$uri} //= 0;
-        my $rule =  %!path-rules{$uri}<returns>[%!path-index{$uri}];
-        if ( $rule ~~ m/^\d ** 3$/ ) {
-            self!register-event( :code($rule), :path($uri), :method($request.method) );
-            $response.status = $rule;
-            $response.close();
-        } elsif ( $rule ~~ "file" ) {
-            self!register-event( :code(200), :path($uri), :method($request.method) );
-            $response.headers<Content-Type> = self!get-type( "{$.dir}{$uri}" );
-            $response.close("{$.dir}{$uri}".IO.slurp(:bin));
-        }
-        
-        %!path-index{$uri}++ unless %!path-index{$uri} == %!path-rules{$uri}<returns>.elems-1;
+        self!process-return-rule( $uri, $request, $response );
     }
     elsif ( "{$.dir}{$uri}".IO.f ) {
         self!register-event( :code(200), :path($uri), :method($request.method) );
@@ -178,8 +188,11 @@ Hash where keys are paths to match (including leading C</>), values are hashes w
 
 =head4 returns
 
-A list of commands to specify the return result, currently valid values. Any 3 digit code will return that HTTP status.
-"file" returns the file at the given path.
+A list of commands to specify the return result, currently valid values.
+
+=item1 Any 3 digit code => returns that HTTP status.
+=item1 "file" => returns the file at the given path.
+=item1 "loop" => goes to the top of the list and processes that
 
 Each time a request is made to the given path the next response in the list will be given. If the end of the list is reached then this result will
 be returned from then on.
