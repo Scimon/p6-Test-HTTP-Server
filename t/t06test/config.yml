@@ -1,0 +1,8 @@
+mime:
+  yml: text/yaml
+paths:
+  /config.yml:
+    returns:
+      - 404
+      - file
+      - loop
