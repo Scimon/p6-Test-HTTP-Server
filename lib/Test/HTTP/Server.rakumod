@@ -81,7 +81,7 @@ method !process-return-rule( $uri, $request, $response ) {
         $response.headers<Content-Type> = self!get-type( "{$.dir}{$uri}" );
         $response.close("{$.dir}{$uri}".IO.slurp(:bin));
     }
-        
+
     %!path-index{$uri}++ unless %!path-index{$uri} == %!path-rules{$uri}<returns>.elems-1;
 }
 

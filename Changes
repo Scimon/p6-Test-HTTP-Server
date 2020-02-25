@@ -1,6 +1,7 @@
 Revision history for Test-HTTP-Server
 
 {{$NEXT}}
+   - Renamed file extensions
 
 0.5.0  2019-03-11T11:55:13Z
    - Moved to a Docker based Travis test
