@@ -2,6 +2,9 @@ Revision history for Test-HTTP-Server
 
 {{$NEXT}}
 
+0.5.2  2022-10-19T09:47:54+01:00
+   - Move to zef
+
 0.5.1  2020-02-25T11:12:22Z
    - Renamed file extensions
 

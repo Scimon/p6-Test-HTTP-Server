@@ -1,32 +1,34 @@
 {
-  "auth" : "github:scimon",
-  "authors" : [
+  "auth": "zef:Scimon",
+  "authors": [
     "Simon Proctor"
   ],
-  "build-depends" : [ ],
-  "depends" : [
+  "build-depends": [
+  ],
+  "depends": [
     "HTTP::Server::Async:ver<0.1.9+>",
     "Test::Util::ServerPort",
     "File::Temp",
     "HTTP::UserAgent",
     "YAMLish"
   ],
-  "description" : "Simple to use wrapper around HTTP::Server::Async designed for tests",
-  "license" : "Artistic-2.0",
-  "name" : "Test::HTTP::Server",
-  "perl" : "6.c",
-  "provides" : {
-    "Test::HTTP::Server" : "lib/Test/HTTP/Server.rakumod",
-    "Test::HTTP::Server::Event" : "lib/Test/HTTP/Server/Event.rakumod"
+  "description": "Simple to use wrapper around HTTP::Server::Async designed for tests",
+  "license": "Artistic-2.0",
+  "name": "Test::HTTP::Server",
+  "perl": "6.c",
+  "provides": {
+    "Test::HTTP::Server": "lib/Test/HTTP/Server.rakumod",
+    "Test::HTTP::Server::Event": "lib/Test/HTTP/Server/Event.rakumod"
   },
-  "resources" : [ ],
-  "source-url" : "https://github.com/Scimon/p6-Test-HTTP-Server.git",
-  "tags" : [
+  "resources": [
+  ],
+  "source-url": "https://github.com/Scimon/p6-Test-HTTP-Server.git",
+  "tags": [
     "test"
   ],
-  "test-depends" : [
+  "test-depends": [
     "File::Temp",
     "HTTP::UserAgent"
   ],
-  "version" : "0.5.1"
+  "version": "0.5.2"
 }
